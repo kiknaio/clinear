@@ -210,16 +210,9 @@ File handling: `issues read` returns an `embeds` array with signed download URLs
 
 Add this (or a version adapted to your workflow) to your `AGENTS.md` or `CLAUDE.md` so every agent session has it in context automatically.
 
-## Development
+## Contributing
 
-```bash
-git clone https://github.com/czottmann/linearis.git
-cd linearis
-npm install
-npm start      # Development mode (tsx, no compilation)
-npm test       # Run tests
-npm run build  # Compile to dist/
-```
+Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Maintainer
 
