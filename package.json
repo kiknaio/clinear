@@ -35,7 +35,8 @@
     "postinstall": "npm run generate && lefthook install",
     "prebuild": "npm run generate && npm run generate:usage",
     "prepare": "lefthook install",
-    "prepublishOnly": "npm run build && npm run test"
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test"
   },
   "engines": {
     "node": ">=22.0.0"
