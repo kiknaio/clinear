@@ -107,4 +107,4 @@ docker run -e LINEAR_API_TOKEN=lin_api_... linearis issue list
 
 ## Version
 
-Current version: 2025.12.3 (defined in `package.json`).
+Current version: 2026.4.1 (defined in `package.json`).

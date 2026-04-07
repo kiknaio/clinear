@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file. The format 
 
 ---
 
+## [2026.4.1] - 2026-04-07
+
+[2026.4.1]: https://github.com/czottmann/linearis/compare/v2025.12.3...v2026.4.1
+
+### Breaking Changes
+
+- **Complete architecture rewrite** to a strict five-layer architecture: CLI Input → Command → Resolver → Service → JSON Output. [#45](https://github.com/czottmann/linearis/issues/45), [#27](https://github.com/czottmann/linearis/issues/27), [#43](https://github.com/czottmann/linearis/issues/43), [#47](https://github.com/czottmann/linearis/issues/47), [PR#49](https://github.com/czottmann/linearis/pull/49)
+- **`embeds` commands renamed to `files`** — `embeds download` → `files download`, `embeds upload` → `files upload`
+- **`project-milestones` commands renamed to `milestones`**
+- **`search` subcommands merged into `list`** — use `issues list --status ...` instead of `issues search --status ...`
+
+### Added
+
+- **Encrypted token authentication** — `linearis auth login` opens Linear in the browser and stores the token encrypted in `~/.linearis/token`. New subcommands: `auth login`, `auth status`, `auth logout`
+- **Issue relation flags** — `--blocks`, `--blocked-by`, `--relates-to` on issue update
+- **Cursor pagination** — `--after` and `--limit` flags on all list commands
+- **Assignee resolution** — `--assignee` flag resolves by name or email
+- **`usage` subcommand** on every command group for self-documenting CLI help
+- **Request timeouts** — GraphQL API requests time out after 30 seconds, file download/upload after 60 seconds. Prevents indefinite hangs, especially important for LLM agent tool timeouts
+- **GraphQL Code Generator pipeline** — queries and mutations defined in `.graphql` files under `graphql/`, codegen produces typed DocumentNodes
+- **Biome** for formatting and linting (replaces previous setup)
+- **Lefthook** git hooks with **commitlint** for conventional commit enforcement
+- **Security policy** (`SECURITY.md`) with responsible disclosure process
+- **GitHub community templates** — bug report form, feature request form, PR template
+
+### Fixed
+
+- File download and upload commands now use proper error exit codes (exit 1) on failure instead of returning exit code 0 with a success envelope
+
+### Documentation
+
+- Complete documentation rewrite for v2 architecture
+- New docs: `architecture.md`, `development.md`, `testing.md`, `build-system.md` with layer invariants, mock patterns, and service/resolver/command templates
+- `AGENTS.md` restructured for machine-first readability with decision trees and anti-patterns
+- `README.md` rewritten for current CLI commands and agent optimization
+- `CONTRIBUTING.md` expanded with dev setup, testing, and architecture pointer
+- Removed obsolete 26k-line GraphQL schema dump and completed implementation plans
+
+---
+
 ## [2025.12.3] - 2025-12-11
 
 [2025.12.3]: https://github.com/czottmann/linearis/compare/v2025.12.2...v2025.12.3
