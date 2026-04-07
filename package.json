@@ -54,12 +54,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/czottmann/linearis.git"
+    "url": "git+https://github.com/linearis-oss/linearis.git"
   },
   "bugs": {
-    "url": "https://github.com/czottmann/linearis/issues"
+    "url": "https://github.com/linearis-oss/linearis/issues"
   },
-  "homepage": "https://github.com/czottmann/linearis#readme",
+  "homepage": "https://github.com/linearis-oss/linearis#readme",
   "dependencies": {
     "@linear/sdk": "58.1.0",
     "commander": "14.0.2"

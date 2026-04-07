@@ -6,11 +6,11 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [2026.4.1] - 2026-04-07
 
-[2026.4.1]: https://github.com/czottmann/linearis/compare/v2025.12.3...v2026.4.1
+[2026.4.1]: https://github.com/linearis-oss/linearis/compare/v2025.12.3...v2026.4.1
 
 ### Breaking Changes
 
-- **Complete architecture rewrite** to a strict five-layer architecture: CLI Input → Command → Resolver → Service → JSON Output. [#45](https://github.com/czottmann/linearis/issues/45), [#27](https://github.com/czottmann/linearis/issues/27), [#43](https://github.com/czottmann/linearis/issues/43), [#47](https://github.com/czottmann/linearis/issues/47), [PR#49](https://github.com/czottmann/linearis/pull/49)
+- **Complete architecture rewrite** to a strict five-layer architecture: CLI Input → Command → Resolver → Service → JSON Output. [#45](https://github.com/linearis-oss/linearis/issues/45), [#27](https://github.com/linearis-oss/linearis/issues/27), [#43](https://github.com/linearis-oss/linearis/issues/43), [#47](https://github.com/linearis-oss/linearis/issues/47), [PR#49](https://github.com/linearis-oss/linearis/pull/49)
 - **`embeds` commands renamed to `files`** — `embeds download` → `files download`, `embeds upload` → `files upload`
 - **`project-milestones` commands renamed to `milestones`**
 - **`search` subcommands merged into `list`** — use `issues list --status ...` instead of `issues search --status ...`
