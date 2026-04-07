@@ -11,6 +11,12 @@ It is designed for both human users and LLM agents, optimized for minimal token 
 - **Tests**: Vitest (`npm test`)
 - **GraphQL codegen**: `npm run generate` (never edit `src/gql/`)
 
+## Audience
+
+This file is for AI coding agents working on the Linearis codebase.
+For user documentation, see [README.md](README.md).
+For human contributor guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Quick Commands
 
 ```bash
@@ -25,27 +31,11 @@ npm run generate:usage  # regenerate USAGE.md
 
 ## Commit Rules
 
-Commits **must** follow [Conventional Commits](https://www.conventionalcommits.org/) (enforced by commitlint via lefthook).
+- **Conventional Commits** required (enforced by commitlint via lefthook).
+- **Issue/PR refs** in commit body when applicable: `Closes #n`, `Refs #n`, `Part of #n`.
+- **No AI co-author trailers.** Do not add `Co-authored-by` for AI assistants.
 
-**Issue/PR references:** If a commit relates to GitHub issues or pull requests, the commit body **must** include references using [GitHub keywords](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/using-keywords-in-issues-and-pull-requests):
-
-- `Closes #<n>` — for issues resolved by the commit
-- `Refs #<n>` — for related issues/PRs that are not closed by this commit
-- `Part of #<n>` — when the commit is one piece of a larger PR or effort
-
-Place references as trailers at the end of the commit body, one per line or comma-separated:
-
-```
-feat: add cursor-based pagination to all list commands
-
-<body describing the change>
-
-Closes #43
-Refs #11
-Part of #45, incorporates #53
-```
-
-**No AI co-author trailers.** Do not add `Co-authored-by` trailers for AI assistants (e.g. Claude, Copilot). Commits are authored by the human who reviews and approves them.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full commit types table and examples.
 
 ## Architecture (5 Layers)
 
@@ -196,14 +186,6 @@ Registration checklist:
 2. Add `usage` subcommand: `.command("usage").action(() => console.log(formatDomainUsage(...)))`.
 3. Add meta to `allMetas[]` in `src/main.ts`.
 4. Run `npm run generate:usage` to update `USAGE.md`.
-
-## Authentication
-
-Resolved in order:
-1. `--api-token <token>` flag
-2. `LINEAR_API_TOKEN` env var
-3. `~/.linearis/token` (encrypted, via `linearis auth login`)
-4. `~/.linear_api_token` (deprecated)
 
 ## File Map
 
