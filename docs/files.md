@@ -119,7 +119,7 @@ tests/unit/
 - **tsconfig.json** -- TypeScript settings (ES2023 target, strict mode, ES modules).
 - **codegen.config.ts** -- GraphQL Code Generator configuration.
 - **vitest.config.ts** -- Test runner configuration.
-- **mise.toml** -- Development tool versions (Node.js 22).
+
 
 ## Documentation (`docs/`)
 

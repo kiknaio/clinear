@@ -5,7 +5,6 @@ Linearis uses TypeScript compilation for production builds, GraphQL code generat
 ## Prerequisites
 
 - **Node.js >= 22.0.0** -- required for ES module support and modern language features
-- **mise** (optional) -- manages tool versions via `mise.toml`; run `mise install` to set up Node.js 22 and Deno 2.2.8 automatically
 
 ## Getting Started
 
@@ -129,7 +128,6 @@ npm run test:commands   # Run command coverage analysis
 | `tsconfig.json` | TypeScript compiler options (ES2022 target, ESNext modules, strict mode, output to `dist/`) |
 | `codegen.config.ts` | GraphQL Code Generator configuration (Linear API schema, client preset) |
 | `vitest.config.ts` | Vitest test runner and coverage settings |
-| `mise.toml` | Development tool versions (Node.js 22, Deno 2.2.8) |
 
 ## Dependencies
 
@@ -183,7 +181,7 @@ npm run clean && npm run generate && npm run build
 ```
 
 **Node.js version issues:**
-Verify you are running Node.js >= 22 with `node --version`. Use mise (`mise install`) or nvm to manage versions.
+Verify you are running Node.js >= 22 with `node --version`. Use nvm to manage versions.
 
 **Missing `dist/` directory:**
 Run `npm run build`. The `dist/` directory is not checked into version control.
