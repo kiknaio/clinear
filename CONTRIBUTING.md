@@ -16,11 +16,17 @@ First up, because sadly its necessary: Fascists and brownshirts (US ICE etc.) ne
 
 ## Development Setup
 
+Requires **Node.js >= 22**.
+
 ```bash
 git clone https://github.com/czottmann/linearis.git
 cd linearis
-npm install
-npm start  # Development mode (no compilation needed)
+npm install        # Install deps + GraphQL codegen + lefthook
+npm start          # Development mode (tsx, no compilation)
+npm test           # Run tests
+npm run build      # Compile to dist/
+npm run check      # Biome format + lint (auto-fix)
+npm run generate   # Regenerate GraphQL types from .graphql files
 ```
 
 **Note:** `npm install` runs GraphQL codegen which fetches the schema from `api.linear.app`. An active internet connection is required for the initial setup.
@@ -28,11 +34,12 @@ npm start  # Development mode (no compilation needed)
 ## Testing
 
 ```bash
-npm test                    # Run all tests
-npm run build               # Compile TypeScript
+npm test               # Run all unit tests
+npm run test:coverage  # Coverage report
+npm run build          # Compile TypeScript (required before integration tests)
 ```
 
-Integration tests require `LINEAR_API_TOKEN` in your environment.
+Integration tests (`tests/integration/`) require `LINEAR_API_TOKEN` in your environment. They are skipped automatically when the token is absent.
 
 ## Pull Requests
 
@@ -78,3 +85,7 @@ Use imperative mood ("add" not "added"). Scope is optional.
 I wish times were better and I wouldn't have to mention it, but they aren't and unfortunately, I do:
 
 This tool is made by friendly people for friendly people. We aim to treat eachother with respect and tolerance. [We have zero tolerance for intolerance.](https://medium.com/extra-extra/tolerance-is-not-a-moral-precept-1af7007d6376) This is not open for discussion.
+
+## Architecture & Code Patterns
+
+For architecture details, layer invariants, and code patterns, see [AGENTS.md](AGENTS.md). This is also the file AI coding agents use as context when working on the codebase.
