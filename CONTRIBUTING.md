@@ -19,7 +19,7 @@ First up, because sadly its necessary: Fascists and brownshirts (US ICE etc.) ne
 Requires **Node.js >= 22**.
 
 ```bash
-git clone https://github.com/czottmann/linearis.git
+git clone https://github.com/linearis-oss/linearis.git
 cd linearis
 npm install        # Install deps + GraphQL codegen + lefthook
 npm start          # Development mode (tsx, no compilation)
