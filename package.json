@@ -14,7 +14,7 @@
     "USAGE.md"
   ],
   "scripts": {
-    "build": "tsc && chmod +x dist/main.js",
+    "build": "tsc",
     "clean": "rm -rf dist/",
     "start": "tsx src/main.ts",
     "test": "vitest run",
@@ -35,7 +35,7 @@
     "postinstall": "npm run generate && lefthook install",
     "prebuild": "npm run generate && npm run generate:usage",
     "prepare": "lefthook install",
-    "prepublishOnly": "npm run build && npm run test && test -x dist/main.js"
+    "prepublishOnly": "npm run build && npm run test"
   },
   "engines": {
     "node": ">=22.0.0"
