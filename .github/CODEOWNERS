@@ -1,0 +1,36 @@
+# ============================================================
+# CODEOWNERS — Linearis
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# ============================================================
+
+# --- Default: all files require at least one maintainer ---
+*                                       @iamfj
+
+# --- Tier 1: Security-critical (auth, tokens, encryption) ---
+src/common/encryption.ts                @iamfj
+src/common/token-storage.ts             @iamfj
+src/common/auth.ts                      @iamfj
+src/services/auth-service.ts            @iamfj
+src/commands/auth.ts                    @iamfj
+SECURITY.md                             @iamfj
+
+# --- Tier 2: Supply chain & CI/CD ---
+.github/workflows/                      @iamfj
+package.json                            @iamfj
+package-lock.json                       @iamfj
+renovate.json                           @iamfj
+lefthook.yml                            @iamfj
+codegen.config.ts                       @iamfj
+
+# --- Tier 3: Architecture guardrails ---
+src/client/                             @iamfj
+src/common/context.ts                   @iamfj
+tsconfig.json                           @iamfj
+biome.json                              @iamfj
+
+# --- Tier 4: Governance ---
+LICENSE.md                              @iamfj
+CONTRIBUTING.md                         @iamfj
+AGENTS.md                               @iamfj
+.github/ISSUE_TEMPLATE/                 @iamfj
+.github/pull_request_template.md        @iamfj
