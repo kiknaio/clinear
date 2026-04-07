@@ -1,115 +1,146 @@
-import { Command } from "commander";
-import { createLinearService } from "../utils/linear-service.js";
-import { handleAsyncCommand, outputSuccess } from "../utils/output.js";
-import type {
-  CycleListOptions,
-  CycleReadOptions,
-  LinearCycle,
-} from "../utils/linear-types.js";
+import type { Command } from "commander";
+import { type CommandOptions, createContext } from "../common/context.js";
 import {
   invalidParameterError,
   notFoundError,
   requiresParameterError,
-} from "../utils/error-messages.js";
+} from "../common/errors.js";
+import { handleCommand, outputSuccess, parseLimit } from "../common/output.js";
+import { type DomainMeta, formatDomainUsage } from "../common/usage.js";
+import { resolveCycleId } from "../resolvers/cycle-resolver.js";
+import { resolveTeamId } from "../resolvers/team-resolver.js";
+import { type Cycle, getCycle, listCycles } from "../services/cycle-service.js";
+
+interface CycleListOptions extends CommandOptions {
+  team?: string;
+  active?: boolean;
+  window?: string;
+  limit: string;
+  after?: string;
+}
+
+interface CycleReadOptions extends CommandOptions {
+  team?: string;
+  limit?: string;
+}
+
+export const CYCLES_META: DomainMeta = {
+  name: "cycles",
+  summary: "time-boxed iterations (sprints) per team",
+  context: [
+    "a cycle is a sprint belonging to one team. each team can have one",
+    "active cycle at a time. cycles contain issues and have start/end dates.",
+  ].join("\n"),
+  arguments: {
+    cycle: "cycle identifier (UUID or name)",
+  },
+  seeAlso: ["issues create --cycle", "issues update --cycle"],
+};
 
 export function setupCyclesCommands(program: Command): void {
   const cycles = program.command("cycles").description("Cycle operations");
 
   cycles.action(() => cycles.help());
 
-  cycles.command("list")
-    .description("List cycles")
-    .option("--team <team>", "team key, name, or ID")
-    .option("--active", "only active cycles")
-    .option(
-      "--around-active <n>",
-      "return active +/- n cycles (requires --team)",
-    )
+  cycles
+    .command("list")
+    .description("list cycles")
+    .option("--team <team>", "filter by team (key, name, or UUID)")
+    .option("--active", "only show active cycles")
+    .option("--window <n>", "active cycle +/- n neighbors (requires --team)")
+    .option("-l, --limit <n>", "max results", "50")
+    .option("--after <cursor>", "cursor for next page")
     .action(
-      handleAsyncCommand(
-        async (options: CycleListOptions, command: Command) => {
-          // around-active requires a team to determine the current team's active cycle
-          // Validate this before authentication to provide better error messages
-          if (options.aroundActive && !options.team) {
-            throw requiresParameterError("--around-active", "--team");
+      handleCommand(async (...args: unknown[]) => {
+        const [options, command] = args as [CycleListOptions, Command];
+        if (options.window && !options.team) {
+          throw requiresParameterError("--window", "--team");
+        }
+        if (options.window && options.after) {
+          throw invalidParameterError(
+            "--after",
+            "cannot be used with --window",
+          );
+        }
+
+        const ctx = createContext(command.parent!.parent!.opts());
+
+        // Resolve team filter if provided
+        const teamId = options.team
+          ? await resolveTeamId(ctx.sdk, options.team)
+          : undefined;
+
+        // Fetch cycles
+        const result = await listCycles(
+          ctx.gql,
+          teamId,
+          options.active || false,
+          { limit: parseLimit(options.limit), after: options.after },
+        );
+
+        if (options.window) {
+          const n = parseInt(options.window, 10);
+          if (Number.isNaN(n) || n < 0) {
+            throw invalidParameterError(
+              "--window",
+              "requires a non-negative integer",
+            );
           }
 
-          const linearService = await createLinearService(
-            command.parent!.parent!.opts(),
-          );
-
-          // Fetch cycles with automatic pagination
-          const allCycles = await linearService.getCycles(
-            options.team,
-            options.active ? true : undefined,
-          );
-
-          // If around-active is requested, filter by cycle number range
-          if (options.aroundActive) {
-            const n = parseInt(options.aroundActive);
-            if (isNaN(n) || n < 0) {
-              throw invalidParameterError(
-                "--around-active",
-                "requires a non-negative integer",
-              );
-            }
-
-            const activeCycle = allCycles.find((c: LinearCycle) => c.isActive);
-            if (!activeCycle) {
-              throw notFoundError("Active cycle", options.team!, "for team");
-            }
-
-            const activeNumber = Number(activeCycle.number || 0);
-            const min = activeNumber - n;
-            const max = activeNumber + n;
-
-            const filtered = allCycles
-              .filter((c: LinearCycle) =>
-                typeof c.number === "number" && c.number >= min &&
-                c.number <= max
-              )
-              .sort((a: LinearCycle, b: LinearCycle) => a.number - b.number);
-
-            outputSuccess(filtered);
-            return;
+          const activeCycle = result.nodes.find((c: Cycle) => c.isActive);
+          if (!activeCycle) {
+            throw notFoundError("Active cycle", options.team ?? "", "for team");
           }
 
-          outputSuccess(allCycles);
-        },
-      ),
+          const activeNumber = activeCycle.number;
+          const min = activeNumber - n;
+          const max = activeNumber + n;
+
+          const filteredNodes = result.nodes
+            .filter((c: Cycle) => c.number >= min && c.number <= max)
+            .sort((a: Cycle, b: Cycle) => a.number - b.number);
+
+          outputSuccess({
+            nodes: filteredNodes,
+            pageInfo: { hasNextPage: false, endCursor: null },
+          });
+          return;
+        }
+
+        outputSuccess(result);
+      }),
     );
 
-  cycles.command("read <cycleIdOrName>")
-    .description(
-      "Get cycle details including issues. Accepts UUID or cycle name (optionally scoped by --team)",
-    )
-    .option("--team <team>", "team key, name, or ID to scope name lookup")
-    .option("--issues-first <n>", "how many issues to fetch (default 50)", "50")
+  cycles
+    .command("read <cycle>")
+    .description("get cycle details including issues")
+    .option("--team <team>", "scope name lookup to team")
+    .option("--limit <n>", "max issues to fetch", "50")
     .action(
-      handleAsyncCommand(
-        async (
-          cycleIdOrName: string,
-          options: CycleReadOptions,
-          command: Command,
-        ) => {
-          const linearService = await createLinearService(
-            command.parent!.parent!.opts(),
-          );
+      handleCommand(async (...args: unknown[]) => {
+        const [cycle, options, command] = args as [
+          string,
+          CycleReadOptions,
+          Command,
+        ];
+        const ctx = createContext(command.parent!.parent!.opts());
 
-          // Resolve cycle ID (handles both UUID and name-based lookup)
-          const cycleId = await linearService.resolveCycleId(
-            cycleIdOrName,
-            options.team,
-          );
+        const cycleId = await resolveCycleId(ctx.sdk, cycle, options.team);
 
-          // Fetch cycle with issues
-          const cycle = await linearService.getCycleById(
-            cycleId,
-            parseInt(options.issuesFirst || "50"),
-          );
+        const cycleResult = await getCycle(
+          ctx.gql,
+          cycleId,
+          parseLimit(options.limit || "50"),
+        );
 
-          outputSuccess(cycle);
-        },
-      ),
+        outputSuccess(cycleResult);
+      }),
     );
+
+  cycles
+    .command("usage")
+    .description("show detailed usage for cycles")
+    .action(() => {
+      console.log(formatDomainUsage(cycles, CYCLES_META));
+    });
 }
