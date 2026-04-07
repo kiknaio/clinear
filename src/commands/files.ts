@@ -44,19 +44,14 @@ export function setupFilesCommands(program: Command): void {
           overwrite: options.overwrite,
         });
 
-        if (result.success) {
-          outputSuccess({
-            success: true,
-            filePath: result.filePath,
-            message: `File downloaded successfully to ${result.filePath}`,
-          });
-        } else {
-          outputSuccess({
-            success: false,
-            error: result.error || "Download failed",
-            statusCode: result.statusCode,
-          });
+        if (!result.success) {
+          throw new Error(result.error || "Download failed");
         }
+
+        outputSuccess({
+          filePath: result.filePath,
+          message: `File downloaded successfully to ${result.filePath}`,
+        });
       }),
     );
 
@@ -70,20 +65,15 @@ export function setupFilesCommands(program: Command): void {
         const fileService = new FileService(apiToken);
         const result = await fileService.uploadFile(filePath);
 
-        if (result.success) {
-          outputSuccess({
-            success: true,
-            assetUrl: result.assetUrl,
-            filename: result.filename,
-            message: `File uploaded successfully: ${result.assetUrl}`,
-          });
-        } else {
-          outputSuccess({
-            success: false,
-            error: result.error || "Upload failed",
-            statusCode: result.statusCode,
-          });
+        if (!result.success) {
+          throw new Error(result.error || "Upload failed");
         }
+
+        outputSuccess({
+          assetUrl: result.assetUrl,
+          filename: result.filename,
+          message: `File uploaded successfully: ${result.assetUrl}`,
+        });
       }),
     );
 
