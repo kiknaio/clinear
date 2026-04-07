@@ -44,12 +44,11 @@ jobs:
           fi
           echo "Version check passed: $PACKAGE_VERSION"
 
-      # Do not use registry-url — it creates an .npmrc with a token
-      # placeholder that would bypass OIDC trusted publishing.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Clean install
         run: npm install
@@ -62,6 +61,8 @@ jobs:
 
       - name: Publish to npm
         run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify publish success
         run: |
