@@ -75,10 +75,10 @@ describe("downloadFile", () => {
     });
     expect(mockFetch).toHaveBeenCalledWith(
       "https://uploads.linear.app/org/file.png",
-      {
+      expect.objectContaining({
         method: "GET",
         headers: { Authorization: `Bearer ${TEST_TOKEN}` },
-      },
+      }),
     );
     expect(writeFile).toHaveBeenCalled();
   });

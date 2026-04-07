@@ -26,6 +26,12 @@ import { FileUploadDocument } from "../gql/graphql.js";
  */
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
+/** Default timeout for file download requests (60 seconds) */
+const DOWNLOAD_TIMEOUT_MS = 60_000;
+
+/** Default timeout for file upload requests (60 seconds) */
+const UPLOAD_TIMEOUT_MS = 60_000;
+
 /**
  * Common MIME types by file extension
  * Used for Content-Type header when uploading files
@@ -195,6 +201,7 @@ export class FileService {
       const response = await fetch(url, {
         method: "GET",
         headers,
+        signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS),
       });
 
       // Handle non-200 responses
@@ -309,6 +316,7 @@ export class FileService {
             size: fileSize,
           },
         }),
+        signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
       });
 
       if (!graphqlResponse.ok) {
@@ -366,6 +374,7 @@ export class FileService {
         method: "PUT",
         headers: putHeaders,
         body: fileContent,
+        signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
       });
 
       if (!putResponse.ok) {
