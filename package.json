@@ -48,6 +48,9 @@
     "cli"
   ],
   "author": "Carlo Zottmann <carlo@zottmann.dev>",
+  "contributors": [
+    "Fabian Jocks <dev@iamfj.xyz>"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
