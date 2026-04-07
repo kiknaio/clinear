@@ -1,294 +1,255 @@
-<!-- Generated: 2025-09-02T10:42:29+02:00 -->
+# Linearis
 
-# Linearis: An opinionated Linear CLI client
-
-CLI tool for [Linear.app](https://linear.app) with JSON output, smart ID resolution, and optimized GraphQL queries. Designed for LLM agents and humans who prefer structured data.
+CLI tool for [Linear.app](https://linear.app) optimized for AI agents. JSON output, smart ID resolution, token-efficient usage commands, and a discover-then-act workflow that keeps agent context small. Works just as well for humans who prefer structured data on the command line.
 
 ## Why?
 
-There was no Linear CLI client I was happy with. Also I want my LLM agents to work with Linear, but the official Linear MCP (while working fine) eats up ~13k tokens (!!) just by being connected. In comparison, `linearis usage` tells the LLM everything it needs to know and comes in well under 1000 tokens.
+The official Linear MCP works fine, but it eats up ~13k tokens just by being connected -- before the agent does anything. Linearis takes a different approach: instead of exposing the full API surface upfront, agents discover what they need through a two-tier usage system. `linearis usage` gives an overview in ~200 tokens, then `linearis <domain> usage` provides the full reference for one area in ~300-500 tokens. A typical agent interaction costs ~500-700 tokens of context, not ~13k.
+
+The trade-off is coverage. An MCP exposes the entire Linear API; Linearis covers the operations that matter for day-to-day work with issues, comments, cycles, documents, and files. If you need to manage custom workflows, integrations, or workspace settings, the MCP is the better choice.
 
 **This project scratches my own itches,** and satisfies my own usage patterns of working with Linear: I **do** work with tickets/issues and comments on the command line; I **do not** manage projects or workspaces etc. there. YMMV.
 
-## Command Examples
-
-### Issues Management
-
-```bash
-# Show available tools
-linearis
-
-# Show available sub-tools
-linearis issues
-linearis labels
-
-# List recent issues
-linearis issues list -l 10
-
-# Search for bugs in specific team/project
-linearis issues search "authentication" --team Platform --project "Auth Service"
-
-# Create new issue with labels and assignment
-linearis issues create "Fix login timeout" --team Backend --assignee user123 \
-  --labels "Bug,Critical" --priority 1 --description "Users can't stay logged in"
-
-# Read issue details (supports ABC-123 format)  
-linearis issues read DEV-456
-
-# Update issue status and priority
-linearis issues update ABC-123 --status "In Review" --priority 2
-
-# Add labels to existing issue
-linearis issues update DEV-789 --labels "Frontend,UX" --label-by adding
-
-# Set parent-child relationships (output includes parentIssue and subIssues fields)
-linearis issues update SUB-001 --parent-ticket EPIC-100
-
-# Clear all labels from issue
-linearis issues update ABC-123 --clear-labels
-```
-
-### Comments
-
-```bash
-# Add comment to issue
-linearis comments create ABC-123 --body "Fixed in PR #456"
-```
-
-### File Downloads
-
-```bash
-# Get issue details including embedded files
-linearis issues read ABC-123
-# Returns JSON with embeds array containing file URLs and expiration timestamps
-
-# Download a file from Linear storage
-linearis embeds download "https://uploads.linear.app/.../file.png?signature=..." --output ./screenshot.png
-
-# Overwrite existing file
-linearis embeds download "https://uploads.linear.app/.../file.png?signature=..." --output ./screenshot.png --overwrite
-```
-
-### File Uploads
-
-```bash
-# Upload a file to Linear storage
-linearis embeds upload ./screenshot.png
-# Returns: { "success": true, "assetUrl": "https://uploads.linear.app/...", "filename": "screenshot.png" }
-
-# Use with comments
-URL=$(linearis embeds upload ./bug.png | jq -r .assetUrl)
-linearis comments create ABC-123 --body "See attached: ![$URL]($URL)"
-```
-
-### Documents
-
-Linear Documents are standalone markdown files that can be associated with projects or teams. Use `--attach-to` to link documents to issues.
-
-```bash
-# Create a document
-linearis documents create --title "API Design" --content "# Overview\n\nThis document..."
-
-# Create document in a project and attach to an issue
-linearis documents create --title "Bug Analysis" --project "Backend" --attach-to ABC-123
-
-# List all documents
-linearis documents list
-
-# List documents selectively
-linearis documents list --project "Backend"
-linearis documents list --issue ABC-123
-
-# Read a document
-linearis documents read <document-id>
-
-# Update a document
-linearis documents update <document-id> --title "New Title" --content "Updated content"
-
-# Delete (trash) a document
-linearis documents delete <document-id>
-```
-
-### Projects & Labels
-
-```bash
-# List all projects
-linearis projects list
-
-# List labels for specific team
-linearis labels list --team Backend
-```
-
-### Teams & Users
-
-```bash
-# List all teams in the workspace
-linearis teams list
-
-# List all users
-linearis users list
-
-# List only active users
-linearis users list --active
-```
-
-### Cycles
-
-You can list and read cycles (sprints) for teams. The CLI exposes simple helpers, but the GraphQL API provides a few cycle-related fields you can use to identify relatives (active, next, previous).
-
-```bash
-# List cycles (optionally scope to a team)
-linearis cycles list --team Backend --limit 10
-
-# Show only the active cycle(s) for a team
-linearis cycles list --team Backend --active
-
-# Read a cycle by ID or by name (optionally scope name lookup with --team)
-linearis cycles read "Sprint 2025-10" --team Backend
-```
-
-Ordering and getting "active +/- 1"
-
-- The cycles returned by the API include fields `isActive`, `isNext`, `isPrevious` and a numerical `number` field. The CLI will prefer an active/next/previous candidate when resolving ambiguous cycle names.
-- To get the active and the next cycle programmatically, do two calls locally:
-  1. `linearis cycles list --team Backend --active --limit 1` to get the active cycle and its `number`.
-  2. `linearis cycles list --team Backend --limit 10` and pick the cycle with `number = (active.number + 1)` or check `isNext` on the returned nodes.
-- If multiple cycles match a name and none is marked active/next/previous, the CLI will return an error listing the candidates so you can use a precise ID or scope with `--team`.
-
-#### Flag Combinations
-
-The `cycles list` command supports several flag combinations:
-
-**Valid combinations:**
-
-- `cycles list` - All cycles across all teams
-- `cycles list --team Backend` - All Backend cycles
-- `cycles list --active` - Active cycles from all teams
-- `cycles list --team Backend --active` - Backend's active cycle only
-- `cycles list --team Backend --around-active 3` - Backend's active cycle ± 3 cycles
-
-**Invalid combinations:**
-
-- `cycles list --around-active 3` - ❌ Error: requires `--team`
-
-**Note:** Using `--active --around-active` together works but `--active` is redundant since `--around-active` always includes the active cycle.
-
-### Advanced Usage
-
-```bash
-# Show all available commands and options (LLM agents love this!)
-linearis usage
-
-# Combine with other tools (pipe JSON output)
-linearis issues list -l 5 | jq '.[] | .identifier + ": " + .title'
-```
-
 ## Installation
-
-### npm (recommended)
 
 ```bash
 npm install -g linearis
 ```
 
-### From source
-
-```bash
-git clone https://github.com/czottmann/linearis.git
-cd linearis
-npm install
-npm run build
-npm link
-```
-
-### Development setup
-
-```bash
-git clone https://github.com/czottmann/linearis.git
-cd linearis
-npm install
-npm start  # Development mode using tsx (no compilation needed)
-```
+Requires Node.js >= 22.
 
 ## Authentication
 
-You can authenticate by passing in your API token via `--api-token` flag:
-
 ```bash
-linearis --api-token <token> issues list
+linearis auth login
 ```
 
-… OR by storing it in an environment variable `LINEAR_API_TOKEN`:
+This opens Linear in your browser, guides you through creating an API key, and stores the token encrypted in `~/.linearis/token`.
+
+Alternatively, provide a token directly:
 
 ```bash
+# Via CLI flag
+linearis --api-token <token> issues list
+
+# Via environment variable
 LINEAR_API_TOKEN=<token> linearis issues list
 ```
 
-… OR by storing it in `~/.linear_api_token` once, and then forgetting about it because the tool will check that file automatically:
+Token resolution order: `--api-token` flag > `LINEAR_API_TOKEN` env > `~/.linearis/token` > `~/.linear_api_token` (deprecated).
+
+## Usage
+
+All output is JSON. Pipe through `jq` or similar for formatting.
 
 ```bash
-# Save token once:
-echo "<token>" > ~/.linear_api_token
-
-# Day-to-day, just use the tool
-linearis issues list
+# Discovery
+linearis usage                # overview of all domains
+linearis issues usage         # detailed usage for one domain
 ```
 
-### Getting a Linear API key/token
+### Issues
 
-1. Log in to your Linear account
-1. Go to _Settings_ → _Security & Access_ → _Personal API keys_
-1. Create a new API key
+```bash
+# List recent issues
+linearis issues list --limit 10
 
-## Example rule for your LLM agent
+# Search issues by text
+linearis issues list --query "authentication" --team Platform
+
+# Create an issue
+linearis issues create "Fix login timeout" --team Backend \
+  --assignee "Jane Doe" --labels "Bug,Critical" --priority 1 \
+  --description "Users report session expiry after 5 minutes"
+
+# Read issue details (supports ABC-123 identifiers)
+linearis issues read DEV-456
+
+# Update status, priority, labels
+linearis issues update ABC-123 --status "In Review" --priority 2
+linearis issues update DEV-789 --labels "Frontend,UX" --label-mode add
+linearis issues update ABC-123 --clear-labels
+
+# Parent-child relationships
+linearis issues update SUB-001 --parent-ticket EPIC-100
+
+# Issue relations
+linearis issues create "Blocked task" --team Backend --blocked-by DEV-123
+linearis issues update ABC-123 --blocks DEV-456
+linearis issues update ABC-123 --relates-to DEV-789
+linearis issues update ABC-123 --remove-relation DEV-456
+```
+
+### Comments
+
+```bash
+linearis comments create ABC-123 --body "Fixed in PR #456"
+```
+
+### Documents
+
+```bash
+# Create a document (optionally link to a project and/or issue)
+linearis documents create --title "API Design" --content "# Overview..."
+linearis documents create --title "Bug Analysis" --project "Backend" --issue ABC-123
+
+# List documents
+linearis documents list
+linearis documents list --project "Backend"
+linearis documents list --issue ABC-123
+
+# Read, update, delete
+linearis documents read <document-id>
+linearis documents update <document-id> --title "New Title" --content "Updated content"
+linearis documents delete <document-id>
+```
+
+### Cycles
+
+```bash
+# List cycles for a team
+linearis cycles list --team Backend --limit 10
+
+# Active cycle only
+linearis cycles list --team Backend --active
+
+# Active cycle +/- 3 neighbors
+linearis cycles list --team Backend --window 3
+
+# Read cycle details
+linearis cycles read "Sprint 2025-10" --team Backend
+```
+
+### Milestones
+
+```bash
+# List milestones in a project
+linearis milestones list --project "Backend"
+
+# Read milestone details
+linearis milestones read "Beta Release" --project "Backend"
+
+# Create and update milestones
+linearis milestones create "v2.0" --project "Backend" --target-date 2025-06-01
+linearis milestones update "v2.0" --project "Backend" --description "Major release"
+```
+
+### Files
+
+```bash
+# Download a file from Linear storage
+linearis files download "https://uploads.linear.app/.../file.png" --output ./screenshot.png
+
+# Upload and reference in a comment
+URL=$(linearis files upload ./bug.png | jq -r .assetUrl)
+linearis comments create ABC-123 --body "Screenshot: ![$URL]($URL)"
+```
+
+### Projects, Labels, Teams, Users
+
+```bash
+linearis projects list
+linearis labels list --team Backend
+linearis teams list
+linearis users list --active
+```
+
+### Pagination
+
+All list commands support cursor-based pagination:
+
+```bash
+linearis issues list --limit 25
+# Response includes pageInfo with endCursor and hasNextPage
+
+linearis issues list --limit 25 --after "cursor-from-previous-response"
+```
+
+## AI Agent Integration
+
+### How agents use Linearis
+
+The CLI is structured around a discover-then-act pattern that matches how agents work:
+
+1. **Discover** -- `linearis usage` returns a compact overview of all domains (~200 tokens). The agent reads this once to understand what's available.
+2. **Drill down** -- `linearis <domain> usage` gives the full command reference for one domain (~300-500 tokens). The agent only loads what it needs.
+3. **Execute** -- All commands return structured JSON. No parsing of human-readable tables or prose.
+
+This means the agent never loads the full API surface into context. It pays for what it uses, one domain at a time.
+
+### Linearis vs. MCP
+
+| | Linearis | Linear MCP |
+|---|---|---|
+| Context cost | ~500-700 tokens per interaction | ~13k tokens on connect |
+| Coverage | Common operations (issues, comments, cycles, docs, files) | Full Linear API |
+| Output | JSON via stdout | Tool call responses |
+| Setup | `npm install -g linearis` + bash tool | MCP server connection |
+
+Use Linearis when token efficiency matters and you work primarily with issues and related data. Use the MCP when you need full API coverage or tight tool-call integration.
+
+### Example prompt
 
 ```markdown
-We track our tickets and projects in Linear (https://linear.app), a project management tool. We use the `linearis` CLI tool for communicating with Linear. Use your Bash tool to call the `linearis` executable. Run `linearis usage` to see usage information.
+## Linear (project management)
 
-The ticket numbers follow the format "ABC-<number>". Always reference tickets by their number.
+Tool: `linearis` CLI via Bash. All output is JSON.
 
-If you create a ticket, and it's not clear which project to assign it to, prompt the user. When creating subtasks, use the project of the parent ticket by default.
+Discovery: Run `linearis usage` once to see available domains. Run `linearis <domain> usage` for full command reference of a specific domain. Do NOT guess flags or subcommands -- check usage first.
 
-When the the status of a task in the ticket description has changed (task → task done), update the description accordingly. When updating a ticket with a progress report that is more than just a checkbox change, add that report as a ticket comment.
+Ticket format: "ABC-123". Always reference tickets by their identifier.
 
-The `issues read` command returns an `embeds` array containing files uploaded to Linear (screenshots, documents, etc.) with signed download URLs and expiration timestamps. Use `embeds download` to download these files when needed.
+Workflow rules:
+- When creating a ticket, ask the user which project to assign it to if unclear.
+- For subtasks, inherit the parent ticket's project by default.
+- When a task in a ticket description changes status, update the description.
+- For progress beyond simple checkbox changes, add a comment instead of editing the description.
+
+File handling: `issues read` returns an `embeds` array with signed download URLs and expiration timestamps. Use `files download` to retrieve them. Use `files upload` to attach new files, then reference the returned URL in comments or descriptions.
 ```
 
-## Author / Maintainer
+Add this (or a version adapted to your workflow) to your `AGENTS.md` or `CLAUDE.md` so every agent session has it in context automatically.
 
-Carlo Zottmann, <carlo@zottmann.dev>, https://c.zottmann.dev, https://github.com/czottmann.
+## Development
 
-This project is neither affiliated with nor endorsed by Linear. I'm just a very happy customer.
+```bash
+git clone https://github.com/czottmann/linearis.git
+cd linearis
+npm install
+npm start      # Development mode (tsx, no compilation)
+npm test       # Run tests
+npm run build  # Compile to dist/
+```
 
-### Sponsoring this project
+## Maintainer
 
-I don't accept sponsoring in the "GitHub sponsorship" sense[^1] but [next to my own apps, I also sell "Tokens of Appreciation"](https://actions.work/store/?ref=github). Any support is appreciated! 😉
+Fabian Jocks -- [github.com/iamfj](https://github.com/iamfj) | [linkedin.com/in/fabianjocks](https://linkedin.com/in/fabianjocks)
+
+## Original Author
+
+Carlo Zottmann -- [c.zottmann.dev](https://c.zottmann.dev) | [github.com/czottmann](https://github.com/czottmann)
+
+Carlo created Linearis and drove its early development. As interest in the project grew, he handed maintenance over to Fabian.
+
+This project is neither affiliated with nor endorsed by Linear.
+
+### Sponsoring Carlo's work
+
+Carlo doesn't accept sponsoring in the "GitHub sponsorship" sense[^1] but [next to his own apps, he also sells "Tokens of Appreciation"](https://actions.work/store/?ref=github). Any support is appreciated!
 
 [^1]: Apparently, the German revenue service is still having some fits over "money for nothing??".
 
 > [!TIP]
-> I make Shortcuts-related macOS & iOS productivity apps like [Actions For Obsidian](https://actions.work/actions-for-obsidian), [Browser Actions](https://actions.work/browser-actions) (which adds Shortcuts support for several major browsers), and [BarCuts](https://actions.work/barcuts) (a surprisingly useful contextual Shortcuts launcher). Check them out!
+> Carlo makes Shortcuts-related macOS & iOS productivity apps like [Actions For Obsidian](https://actions.work/actions-for-obsidian), [Browser Actions](https://actions.work/browser-actions) (which adds Shortcuts support for several major browsers), and [BarCuts](https://actions.work/barcuts) (a surprisingly useful contextual Shortcuts launcher). Check them out!
 
-## Contributors 🤙🏼
+## Contributors
 
+- [Fabian Jocks](https://github.com/iamfj)
 - [Ryan Rozich](https://github.com/ryanrozich)
 - [Chad Walters](https://github.com/chadrwalters)
 - [Louis Mandelstam](https://github.com/man8)
 - [Ralf Schimmel](https://github.com/ralfschimmel)
 
-## Documentation
+## License
 
-- **[docs/project-overview.md](docs/project-overview.md)** - Project purpose, technology stack, and platform support
-- **[docs/architecture.md](docs/architecture.md)** - Component organization, data flow, and performance patterns
-- **[docs/build-system.md](docs/build-system.md)** - TypeScript compilation, automated builds
-- **[docs/testing.md](docs/testing.md)** - Testing approach, manual validation, and performance benchmarks
-- **[docs/development.md](docs/development.md)** - Code patterns, TypeScript standards, and common workflows
-- **[docs/deployment.md](docs/deployment.md)** - Git-based npm install, automated compilation, and production deployment
-- **[docs/files.md](docs/files.md)** - Complete file catalog with descriptions and relationships
-
-## Key Entry Points
-
-- **dist/main.js** - Compiled CLI entry point for production use
-- **src/main.ts** - TypeScript source with Commander.js setup (development)
-- **package.json** - Project configuration with automated build scripts and npm distribution
-- **tsconfig.json** - TypeScript compilation targeting ES2023 with dist/ output
+MIT. See [LICENSE.md](LICENSE.md).

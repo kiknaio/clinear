@@ -23,6 +23,8 @@ npm install
 npm start  # Development mode (no compilation needed)
 ```
 
+**Note:** `npm install` runs GraphQL codegen which fetches the schema from `api.linear.app`. An active internet connection is required for the initial setup.
+
 ## Testing
 
 ```bash
