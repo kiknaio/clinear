@@ -19,7 +19,7 @@ const LINEAR_API_KEY_URL =
 const SOURCE_LABELS: Record<TokenSource, string> = {
   flag: "--api-token flag",
   env: "LINEAR_API_TOKEN env var",
-  stored: "~/.linearis/token",
+  stored: "~/.clinear/token",
   legacy: "~/.linear_api_token (deprecated)",
 };
 
@@ -27,11 +27,11 @@ export const AUTH_META: DomainMeta = {
   name: "auth",
   summary: "authenticate with Linear API (interactive, for humans)",
   context: [
-    "linearis requires a Linear API token for all operations.",
+    "clinear requires a Linear API token for all operations.",
     "the auth command guides you through creating and storing a token.",
-    "tokens are encrypted and stored in ~/.linearis/token.",
+    "tokens are encrypted and stored in ~/.clinear/token.",
     "token resolution order: --api-token flag, LINEAR_API_TOKEN env,",
-    "~/.linearis/token (encrypted), ~/.linear_api_token (deprecated).",
+    "~/.clinear/token (encrypted), ~/.linear_api_token (deprecated).",
   ].join("\n"),
   arguments: {},
   seeAlso: [],
@@ -150,7 +150,7 @@ export function setupAuthCommands(program: Command): void {
         console.error(
           "  1. Open the link below (or it will open automatically)",
         );
-        console.error("  2. Set key name to: linearis-cli");
+        console.error("  2. Set key name to: clinear-cli");
         console.error("  3. Keep 'Full access' selected (default)");
         console.error("  4. Keep 'All teams' selected (default)");
         console.error("  5. Click 'Create'");
@@ -186,7 +186,7 @@ export function setupAuthCommands(program: Command): void {
         console.error(
           `Authentication successful. Logged in as ${viewer.name} (${viewer.email}).`,
         );
-        console.error("Token encrypted and stored in ~/.linearis/token");
+        console.error("Token encrypted and stored in ~/.clinear/token");
       } catch (error) {
         console.error(
           `Authentication failed: ${error instanceof Error ? error.message : String(error)}`,
@@ -214,7 +214,7 @@ export function setupAuthCommands(program: Command): void {
           outputSuccess({
             authenticated: false,
             message:
-              "No API token found. Run 'linearis auth login' to authenticate.",
+              "No API token found. Run 'clinear auth login' to authenticate.",
           });
           return;
         }
@@ -231,7 +231,7 @@ export function setupAuthCommands(program: Command): void {
             authenticated: false,
             source: SOURCE_LABELS[source],
             message:
-              "Token is invalid or expired. Run 'linearis auth login' to reauthenticate.",
+              "Token is invalid or expired. Run 'clinear auth login' to reauthenticate.",
           });
         }
       }),

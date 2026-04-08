@@ -34,7 +34,7 @@ describe("Cycles CLI Commands", () => {
     it("should display help text", async () => {
       const { stdout } = await execAsync(`node ${CLI_PATH} cycles --help`);
 
-      expect(stdout).toContain("Usage: linearis cycles");
+      expect(stdout).toContain("Usage: clinear cycles");
       expect(stdout).toContain("Cycle operations");
       expect(stdout).toContain("list");
       expect(stdout).toContain("read");

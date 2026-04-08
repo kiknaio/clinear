@@ -125,7 +125,7 @@ describe("outputAuthError", () => {
     expect(output.message).toBe("Linear API authentication failed.");
     expect(output.details).toBe("Token expired");
     expect(output.action).toBe("USER_ACTION_REQUIRED");
-    expect(output.instruction).toContain("linearis auth");
+    expect(output.instruction).toContain("clinear auth");
     expect(output.exit_code).toBe(42);
     expect(exitSpy).toHaveBeenCalledWith(42);
 

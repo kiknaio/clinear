@@ -157,11 +157,11 @@ Total wall time: 0.904 seconds (including npm overhead and Node.js startup).
 
 ```bash
 # Time any command
-time linearis <command>
+time clinear <command>
 
 # Examples
-time linearis issues list -l 25
-time linearis issues search "bug" --team ABC
+time clinear issues list -l 25
+time clinear issues search "bug" --team ABC
 ```
 
 ## Future Considerations

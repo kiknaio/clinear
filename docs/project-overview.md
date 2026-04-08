@@ -1,6 +1,6 @@
 # Project Overview
 
-Linearis is a command-line interface for [Linear.app](https://linear.app) that outputs structured JSON. It is built for automation, scripting, and integration with other tools, including LLM agents.
+Clinear is a command-line interface for [Linear.app](https://linear.app) that outputs structured JSON. It is built for automation, scripting, and integration with other tools, including LLM agents.
 
 All commands return JSON-formatted responses. Human-friendly identifiers (such as team keys like `ENG` or issue identifiers like `ENG-42`) are automatically resolved to internal UUIDs before any API call is made.
 
@@ -42,13 +42,13 @@ Commands receive user input, resolve any identifiers to UUIDs through the resolv
 
 ## Authentication
 
-Interactive setup (for humans): `linearis auth login` — opens Linear in the browser and stores the token encrypted in `~/.linearis/token`.
+Interactive setup (for humans): `clinear auth login` — opens Linear in the browser and stores the token encrypted in `~/.clinear/token`.
 
 Token resolution order:
 
 1. `--api-token` CLI flag
 2. `LINEAR_API_TOKEN` environment variable
-3. `~/.linearis/token` (encrypted, set up via `linearis auth login`)
+3. `~/.clinear/token` (encrypted, set up via `clinear auth login`)
 4. `~/.linear_api_token` (deprecated)
 
 ## Build and Development
@@ -64,7 +64,7 @@ The compiled binary is `dist/main.js`.
 
 ## Package Information
 
-- **Name:** linearis
+- **Name:** clinear
 - **License:** MIT
 - **Node.js:** >= 22.0.0
 - **Module system:** ES modules

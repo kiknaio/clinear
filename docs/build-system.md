@@ -1,6 +1,6 @@
 # Build System
 
-Linearis uses TypeScript compilation for production builds, GraphQL code generation for type-safe API access, and Vitest for testing. Development runs directly via tsx without a compilation step.
+Clinear uses TypeScript compilation for production builds, GraphQL code generation for type-safe API access, and Vitest for testing. Development runs directly via tsx without a compilation step.
 
 ## Prerequisites
 
@@ -41,7 +41,7 @@ The project auto-generates token-optimized usage documentation for LLM agents.
 **How it works:**
 
 1. Each command file exports a `DomainMeta` object with domain name, summary, context, arguments, and cross-references.
-2. Running `npm run generate:usage` executes `linearis usage --all` and captures output to `USAGE.md`.
+2. Running `npm run generate:usage` executes `clinear usage --all` and captures output to `USAGE.md`.
 3. The generated file contains two tiers: overview (~200 tokens) + per-domain detail (~300-500 tokens each).
 
 **When usage generation runs automatically:**
@@ -89,7 +89,7 @@ npm publish             # Triggers prepublishOnly: build, test, and verify dist/
 
 ## Testing
 
-Linearis uses [Vitest](https://vitest.dev) for unit and integration tests. Test files live in `tests/` and follow the pattern `tests/**/*.test.ts`.
+Clinear uses [Vitest](https://vitest.dev) for unit and integration tests. Test files live in `tests/` and follow the pattern `tests/**/*.test.ts`.
 
 ```bash
 npm test                # Run all tests once

@@ -187,7 +187,7 @@ describe("auth status", () => {
     const output = JSON.parse(stdoutSpy.mock.calls[0][0] as string);
     expect(output).toEqual({
       authenticated: true,
-      source: "~/.linearis/token",
+      source: "~/.clinear/token",
       user: { id: "user-1", name: "Test User", email: "test@example.com" },
     });
   });
@@ -203,7 +203,7 @@ describe("auth status", () => {
     const output = JSON.parse(stdoutSpy.mock.calls[0][0] as string);
     expect(output).toEqual({
       authenticated: false,
-      message: "No API token found. Run 'linearis auth login' to authenticate.",
+      message: "No API token found. Run 'clinear auth login' to authenticate.",
     });
   });
 
@@ -224,7 +224,7 @@ describe("auth status", () => {
       authenticated: false,
       source: "LINEAR_API_TOKEN env var",
       message:
-        "Token is invalid or expired. Run 'linearis auth login' to reauthenticate.",
+        "Token is invalid or expired. Run 'clinear auth login' to reauthenticate.",
     });
   });
 
@@ -234,7 +234,7 @@ describe("auth status", () => {
     const sourceLabels: Record<string, string> = {
       flag: "--api-token flag",
       env: "LINEAR_API_TOKEN env var",
-      stored: "~/.linearis/token",
+      stored: "~/.clinear/token",
       legacy: "~/.linear_api_token (deprecated)",
     };
 

@@ -22,7 +22,7 @@ export function outputAuthError(error: AuthenticationError): void {
         details: error.details,
         action: "USER_ACTION_REQUIRED",
         instruction:
-          "Run 'linearis auth' to set up or refresh your authentication token.",
+          "Run 'clinear auth' to set up or refresh your authentication token.",
         exit_code: AUTH_ERROR_CODE,
       },
       null,

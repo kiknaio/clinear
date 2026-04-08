@@ -1,11 +1,11 @@
 {
-  "name": "linearis",
+  "name": "clinear",
   "version": "2026.4.1",
   "description": "CLI tool for Linear.app with JSON output, smart ID resolution, and optimized GraphQL queries. Designed for LLM agents and humans who prefer structured data.",
   "main": "dist/main.js",
   "type": "module",
   "bin": {
-    "linearis": "dist/main.js"
+    "clinear": "dist/main.js"
   },
   "files": [
     "dist/",
@@ -55,12 +55,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/linearis-oss/linearis.git"
+    "url": "git+https://github.com/clinear-oss/clinear.git"
   },
   "bugs": {
-    "url": "https://github.com/linearis-oss/linearis/issues"
+    "url": "https://github.com/clinear-oss/clinear/issues"
   },
-  "homepage": "https://github.com/linearis-oss/linearis#readme",
+  "homepage": "https://github.com/clinear-oss/clinear#readme",
   "dependencies": {
     "@linear/sdk": "58.1.0",
     "commander": "14.0.2"

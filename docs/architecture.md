@@ -1,6 +1,6 @@
 # Architecture
 
-Linearis follows a modular, five-layer architecture with clear separation of concerns. The application uses a command-based structure with Commander.js, typed GraphQL operations, standalone resolver functions, and service functions that eliminate code duplication.
+Clinear follows a modular, five-layer architecture with clear separation of concerns. The application uses a command-based structure with Commander.js, typed GraphQL operations, standalone resolver functions, and service functions that eliminate code duplication.
 
 The architecture emphasizes performance through GraphQL batch operations, single-query optimizations, and smart ID resolution for user convenience. All components are fully typed with TypeScript - no `any` types in the new architecture. The system uses both direct GraphQL queries (via typed client) and Linear SDK (for ID resolution).
 

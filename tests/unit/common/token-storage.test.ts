@@ -39,23 +39,23 @@ function setPlatform(p: string): void {
   Object.defineProperty(process, "platform", { value: p });
 }
 
-const legacyDir = path.join(HOME, ".linearis");
-const legacyToken = path.join(HOME, ".linearis", "token");
-const xdgDir = path.join(HOME, ".config", "linearis");
-const xdgToken = path.join(HOME, ".config", "linearis", "token");
+const legacyDir = path.join(HOME, ".clinear");
+const legacyToken = path.join(HOME, ".clinear", "token");
+const xdgDir = path.join(HOME, ".config", "clinear");
+const xdgToken = path.join(HOME, ".config", "clinear", "token");
 
 describe("getTokenDir", () => {
-  it("returns ~/.linearis on macOS", () => {
+  it("returns ~/.clinear on macOS", () => {
     setPlatform("darwin");
     expect(getTokenDir()).toBe(legacyDir);
   });
 
-  it("returns ~/.linearis on Windows", () => {
+  it("returns ~/.clinear on Windows", () => {
     setPlatform("win32");
     expect(getTokenDir()).toBe(legacyDir);
   });
 
-  it("returns ~/.config/linearis on Linux when XDG_CONFIG_HOME is unset", () => {
+  it("returns ~/.config/clinear on Linux when XDG_CONFIG_HOME is unset", () => {
     setPlatform("linux");
     expect(getTokenDir()).toBe(xdgDir);
   });
@@ -63,7 +63,7 @@ describe("getTokenDir", () => {
   it("uses XDG_CONFIG_HOME on Linux when set", () => {
     setPlatform("linux");
     process.env.XDG_CONFIG_HOME = "/custom/config";
-    expect(getTokenDir()).toBe(path.join("/custom/config", "linearis"));
+    expect(getTokenDir()).toBe(path.join("/custom/config", "clinear"));
   });
 
   it("ignores relative XDG_CONFIG_HOME", () => {

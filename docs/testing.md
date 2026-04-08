@@ -1,6 +1,6 @@
 # Testing
 
-Linearis uses [Vitest](https://vitest.dev/) for unit and integration tests. Tests enforce the layered architecture by mocking one layer deep, keeping each layer testable in isolation.
+Clinear uses [Vitest](https://vitest.dev/) for unit and integration tests. Tests enforce the layered architecture by mocking one layer deep, keeping each layer testable in isolation.
 
 ## Running Tests
 

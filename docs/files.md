@@ -1,6 +1,6 @@
 # File Catalog
 
-A reference of every file in the Linearis codebase, organized by architectural layer.
+A reference of every file in the Clinear codebase, organized by architectural layer.
 
 ## Entry Point
 
@@ -62,8 +62,8 @@ CLI orchestration. Each file registers a command group via a `setup*Commands(pro
 Shared utilities used across all layers.
 
 - **context.ts** -- `CommandContext` interface and `createContext()` factory that produces both `GraphQLClient` and `LinearSdkClient`.
-- **auth.ts** -- `resolveApiToken()` with multi-source lookup: `--api-token` flag, `LINEAR_API_TOKEN` env var, `~/.linearis/token` (encrypted), `~/.linear_api_token` (deprecated).
-- **token-storage.ts** -- `saveToken()`, `getStoredToken()`, `clearToken()` for encrypted token storage in `~/.linearis/token`.
+- **auth.ts** -- `resolveApiToken()` with multi-source lookup: `--api-token` flag, `LINEAR_API_TOKEN` env var, `~/.clinear/token` (encrypted), `~/.linear_api_token` (deprecated).
+- **token-storage.ts** -- `saveToken()`, `getStoredToken()`, `clearToken()` for encrypted token storage in `~/.clinear/token`.
 - **encryption.ts** -- AES-256-CBC encryption for token storage.
 - **output.ts** -- `outputSuccess()`, `outputError()`, and `handleCommand()` wrapper for consistent JSON output and error handling.
 - **errors.ts** -- `notFoundError()`, `multipleMatchesError()`, `invalidParameterError()`, `requiresParameterError()`.

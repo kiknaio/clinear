@@ -30,7 +30,7 @@ describe("Teams CLI Commands", () => {
     it("should display help text", async () => {
       const { stdout } = await execAsync(`node ${CLI_PATH} teams --help`);
 
-      expect(stdout).toContain("Usage: linearis teams");
+      expect(stdout).toContain("Usage: clinear teams");
       expect(stdout).toContain("Team operations");
       expect(stdout).toContain("list");
     });

@@ -3,8 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { decryptToken, encryptToken } from "./encryption.js";
 
-const DIR_NAME = "linearis";
-const LEGACY_DIR_NAME = ".linearis";
+const DIR_NAME = "clinear";
+const LEGACY_DIR_NAME = ".clinear";
 const TOKEN_FILE = "token";
 
 export function getTokenDir(): string {
@@ -50,7 +50,7 @@ export function saveToken(token: string): void {
 export function getStoredToken(): string | null {
   const tokenPath = getTokenPath();
   if (!fs.existsSync(tokenPath)) {
-    // on linux, fall back to legacy ~/.linearis/token
+    // on linux, fall back to legacy ~/.clinear/token
     if (process.platform === "linux") {
       const legacy = getLegacyTokenPath();
       if (fs.existsSync(legacy)) {

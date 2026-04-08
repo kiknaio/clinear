@@ -11,10 +11,10 @@ export interface DomainMeta {
 export function formatOverview(version: string, metas: DomainMeta[]): string {
   const lines: string[] = [];
   lines.push(
-    `linearis v${version} — CLI for Linear.app (project management / issue tracking)`,
+    `clinear v${version} — CLI for Linear.app (project management / issue tracking)`,
   );
   lines.push(
-    "auth: linearis auth login | --api-token <token> | LINEAR_API_TOKEN | ~/.linearis/token",
+    "auth: clinear auth login | --api-token <token> | LINEAR_API_TOKEN | ~/.clinear/token",
   );
   lines.push("output: JSON");
   lines.push("ids: UUID or human-readable (team key, issue ABC-123, name)");
@@ -24,7 +24,7 @@ export function formatOverview(version: string, metas: DomainMeta[]): string {
     lines.push(`  ${meta.name.padEnd(14)}${meta.summary}`);
   }
   lines.push("");
-  lines.push("detail: linearis <domain> usage");
+  lines.push("detail: clinear <domain> usage");
   return lines.join("\n");
 }
 
@@ -52,7 +52,7 @@ function formatCommandSignature(cmd: Command): string {
 export function formatDomainUsage(command: Command, meta: DomainMeta): string {
   const lines: string[] = [];
 
-  lines.push(`linearis ${meta.name} — ${meta.summary}`);
+  lines.push(`clinear ${meta.name} — ${meta.summary}`);
   lines.push("");
   lines.push(meta.context);
   lines.push("");

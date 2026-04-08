@@ -1,6 +1,6 @@
 # Deployment
 
-Linearis is a CLI tool for Linear.app that compiles from TypeScript to JavaScript during installation. It runs on Node.js 22+ and outputs JSON for all commands.
+Clinear is a CLI tool for Linear.app that compiles from TypeScript to JavaScript during installation. It runs on Node.js 22+ and outputs JSON for all commands.
 
 ## Installation
 
@@ -9,8 +9,8 @@ Linearis is a CLI tool for Linear.app that compiles from TypeScript to JavaScrip
 Clone and install:
 
 ```bash
-git clone https://github.com/linearis-oss/linearis.git
-cd linearis
+git clone https://github.com/clinear-oss/clinear.git
+cd clinear
 npm install
 ```
 
@@ -26,12 +26,12 @@ npm run build
 npm link
 ```
 
-This creates the `linearis` command, pointing to `dist/main.js`.
+This creates the `clinear` command, pointing to `dist/main.js`.
 
 ### Direct Git Install
 
 ```bash
-npm install git+https://github.com/linearis-oss/linearis.git
+npm install git+https://github.com/clinear-oss/clinear.git
 ```
 
 This runs `postinstall` to generate GraphQL types. You still need to run `npm run build` separately to compile TypeScript.
@@ -50,13 +50,13 @@ The build script runs `tsc && chmod +x dist/main.js`. The clean script uses `rm 
 
 ## Authentication
 
-For interactive use (humans), run `linearis auth login` — it opens Linear in the browser and stores the token encrypted in `~/.linearis/token`.
+For interactive use (humans), run `clinear auth login` — it opens Linear in the browser and stores the token encrypted in `~/.clinear/token`.
 
-Linearis checks for an API token in this order:
+Clinear checks for an API token in this order:
 
 1. `--api-token` flag on the command line
 2. `LINEAR_API_TOKEN` environment variable
-3. `~/.linearis/token` (encrypted, set up via `linearis auth login`)
+3. `~/.clinear/token` (encrypted, set up via `clinear auth login`)
 4. `~/.linear_api_token` (deprecated)
 
 For automated environments (CI, containers), set the environment variable.
@@ -89,8 +89,8 @@ ENTRYPOINT ["node", "dist/main.js"]
 Pass the API token as an environment variable:
 
 ```bash
-docker build -t linearis .
-docker run -e LINEAR_API_TOKEN=lin_api_... linearis issue list
+docker build -t clinear .
+docker run -e LINEAR_API_TOKEN=lin_api_... clinear issue list
 ```
 
 ## Troubleshooting

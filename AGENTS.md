@@ -2,8 +2,9 @@
 
 ## Identity
 
-Linearis is a **CLI tool for Linear.app** that outputs **JSON only** (except help/usage text).
-It is designed for both human users and LLM agents, optimized for minimal token usage and maximum structure.
+Clinear is a **CLI tool for Linear.app built exclusively for AI agents**. It outputs **JSON only** (except help/usage text), and every design decision optimizes for minimal token consumption and maximum structure.
+
+Human usability is a non-goal. The output shape, flag design, and command structure all exist to keep agent context small and responses machine-readable.
 
 - **Runtime**: Node.js ≥ 22, ES Modules, TypeScript strict mode
 - **Package manager**: npm
@@ -13,9 +14,21 @@ It is designed for both human users and LLM agents, optimized for minimal token 
 
 ## Audience
 
-This file is for AI coding agents working on the Linearis codebase.
-For user documentation, see [README.md](README.md).
+This file is for AI coding agents working on the Clinear codebase.
+For user/agent documentation, see [README.md](README.md).
 For human contributor guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Output Design Principles
+
+These principles govern all command output. Treat them as invariants alongside the layer rules:
+
+1. **No wrapper objects on lists.** `list` commands return a flat JSON array, never `{ nodes: [], pageInfo: {} }`.
+2. **Omit null and empty fields.** Keys with `null`, `undefined`, or empty array values are dropped from output entirely. Agents pay per token — absent keys cost nothing.
+3. **Flatten nested `nodes` arrays.** GraphQL connection types (`labels.nodes`, `children.nodes`, etc.) are unwrapped to plain arrays. If the array is empty, the key is omitted (see rule 2).
+4. **`--fields` for field selection.** `list` and `read` commands support `--fields <comma-separated>` to return only the requested fields. `id` and `identifier` are always included regardless.
+5. **`id` and `identifier` are always present.** Agents need these to reference and act on issues.
+
+When adding new list or read commands, implement all five rules in the command layer using the `normalizeIssue` pattern in `src/commands/issues.ts` as a reference.
 
 ## Quick Commands
 

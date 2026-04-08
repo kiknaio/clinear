@@ -26,7 +26,7 @@ import {
 } from "./common/usage.js";
 
 program
-  .name("linearis")
+  .name("clinear")
   .description("CLI for Linear.app with JSON output")
   .version(pkg.version)
   .option("--api-token <token>", "Linear API token");
@@ -80,4 +80,5 @@ program
     }
   });
 
-program.parse();
+await program.parseAsync();
+process.exit(0);

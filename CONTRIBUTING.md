@@ -1,4 +1,4 @@
-# Contributing to Linearis
+# Contributing to Clinear
 
 Thanks for your interest in contributing!
 
@@ -19,8 +19,8 @@ First up, because sadly its necessary: Fascists and brownshirts (US ICE etc.) ne
 Requires **Node.js >= 22**.
 
 ```bash
-git clone https://github.com/linearis-oss/linearis.git
-cd linearis
+git clone https://github.com/clinear-oss/clinear.git
+cd clinear
 npm install        # Install deps + GraphQL codegen + lefthook
 npm start          # Development mode (tsx, no compilation)
 npm test           # Run tests
@@ -80,7 +80,7 @@ docs: update README with new commands
 
 Use imperative mood ("add" not "added"). Scope is optional.
 
-## Linearis is opinionated, because its maintainer is
+## Clinear is opinionated, because its maintainer is
 
 I wish times were better and I wouldn't have to mention it, but they aren't and unfortunately, I do:
 

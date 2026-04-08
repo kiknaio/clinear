@@ -6,18 +6,18 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [2026.4.1] - 2026-04-07
 
-[2026.4.1]: https://github.com/linearis-oss/linearis/compare/v2025.12.3...v2026.4.1
+[2026.4.1]: https://github.com/clinear-oss/clinear/compare/v2025.12.3...v2026.4.1
 
 ### Breaking Changes
 
-- **Complete architecture rewrite** to a strict five-layer architecture: CLI Input → Command → Resolver → Service → JSON Output. [#45](https://github.com/linearis-oss/linearis/issues/45), [#27](https://github.com/linearis-oss/linearis/issues/27), [#43](https://github.com/linearis-oss/linearis/issues/43), [#47](https://github.com/linearis-oss/linearis/issues/47), [PR#49](https://github.com/linearis-oss/linearis/pull/49)
+- **Complete architecture rewrite** to a strict five-layer architecture: CLI Input → Command → Resolver → Service → JSON Output. [#45](https://github.com/clinear-oss/clinear/issues/45), [#27](https://github.com/clinear-oss/clinear/issues/27), [#43](https://github.com/clinear-oss/clinear/issues/43), [#47](https://github.com/clinear-oss/clinear/issues/47), [PR#49](https://github.com/clinear-oss/clinear/pull/49)
 - **`embeds` commands renamed to `files`** — `embeds download` → `files download`, `embeds upload` → `files upload`
 - **`project-milestones` commands renamed to `milestones`**
 - **`search` subcommands merged into `list`** — use `issues list --status ...` instead of `issues search --status ...`
 
 ### Added
 
-- **Encrypted token authentication** — `linearis auth login` opens Linear in the browser and stores the token encrypted in `~/.linearis/token`. New subcommands: `auth login`, `auth status`, `auth logout`
+- **Encrypted token authentication** — `clinear auth login` opens Linear in the browser and stores the token encrypted in `~/.clinear/token`. New subcommands: `auth login`, `auth status`, `auth logout`
 - **Issue relation flags** — `--blocks`, `--blocked-by`, `--relates-to` on issue update
 - **Cursor pagination** — `--after` and `--limit` flags on all list commands
 - **Assignee resolution** — `--assignee` flag resolves by name or email
@@ -46,7 +46,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [2025.12.3] - 2025-12-11
 
-[2025.12.3]: https://github.com/czottmann/linearis/compare/v2025.12.2...v2025.12.3
+[2025.12.3]: https://github.com/czottmann/clinear/compare/v2025.12.2...v2025.12.3
 
 ### Fixed
 
@@ -56,14 +56,14 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [2025.12.2] - 2025-12-11
 
-[2025.12.2]: https://github.com/czottmann/linearis/compare/v2025.11.3...v2025.12.2
+[2025.12.2]: https://github.com/czottmann/clinear/compare/v2025.11.3...v2025.12.2
 
 ### Added
 
-- New `embeds upload` command to upload files to Linear storage – thanks, [@chadrwalters](https://github.com/chadrwalters)! [PR#23](https://github.com/czottmann/linearis/pull/23)
-- New `documents` commands for Linear document management – thanks, [@ralfschimmel](https://github.com/ralfschimmel)! [PR#21](https://github.com/czottmann/linearis/pull/21)
-- `issues` commands now include the `branchName` field (the git branch name associated with the issue). [#14](https://github.com/czottmann/linearis/issues/14) <!-- ZCO-1629 -->
-- Diagnostic output for issue transform errors, showing raw API response and stack trace to help debug null field issues. [#6](https://github.com/czottmann/linearis/issues/6) <!-- ZCO-1630 -->
+- New `embeds upload` command to upload files to Linear storage – thanks, [@chadrwalters](https://github.com/chadrwalters)! [PR#23](https://github.com/czottmann/clinear/pull/23)
+- New `documents` commands for Linear document management – thanks, [@ralfschimmel](https://github.com/ralfschimmel)! [PR#21](https://github.com/czottmann/clinear/pull/21)
+- `issues` commands now include the `branchName` field (the git branch name associated with the issue). [#14](https://github.com/czottmann/clinear/issues/14) <!-- ZCO-1629 -->
+- Diagnostic output for issue transform errors, showing raw API response and stack trace to help debug null field issues. [#6](https://github.com/czottmann/clinear/issues/6) <!-- ZCO-1630 -->
 
 ### Breaking Changes
 
@@ -80,23 +80,23 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [2025.11.3] - 2025-11-20
 
-[2025.11.3]: https://github.com/czottmann/linearis/compare/2025.11.2...v2025.11.3
+[2025.11.3]: https://github.com/czottmann/clinear/compare/2025.11.2...v2025.11.3
 
 ### Added
 
-- New `teams` command with `list` subcommand 🎉 – thanks, [@chadrwalters](https://github.com/chadrwalters)! [PR#13](https://github.com/czottmann/linearis/pull/13)
+- New `teams` command with `list` subcommand 🎉 – thanks, [@chadrwalters](https://github.com/chadrwalters)! [PR#13](https://github.com/czottmann/clinear/pull/13)
   - Lists all teams in workspace with id, key, name, and description
   - Results sorted alphabetically by name
-- New `users` command with `list` subcommand [PR#13](https://github.com/czottmann/linearis/pull/13)
+- New `users` command with `list` subcommand [PR#13](https://github.com/czottmann/clinear/pull/13)
   - Lists all users with id, name, displayName, email, and active status
   - Supports `--active` flag to filter for active users only
   - Results sorted alphabetically by name
-- Integration tests for teams and users commands [PR#13](https://github.com/czottmann/linearis/pull/13)
+- Integration tests for teams and users commands [PR#13](https://github.com/czottmann/clinear/pull/13)
 
 ### Fixed
 
-- GraphQL orderBy error resolved by implementing client-side sorting for teams and users list commands [PR#13](https://github.com/czottmann/linearis/pull/13)
-- Project name matching is now case-insensitive (using `eqIgnoreCase`) for better UX [PR#13](https://github.com/czottmann/linearis/pull/13)
+- GraphQL orderBy error resolved by implementing client-side sorting for teams and users list commands [PR#13](https://github.com/czottmann/clinear/pull/13)
+- Project name matching is now case-insensitive (using `eqIgnoreCase`) for better UX [PR#13](https://github.com/czottmann/clinear/pull/13)
 
 ### Documentation
 
@@ -107,11 +107,11 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [2025.11.2] - 2025-11-11
 
-[2025.11.2]: https://github.com/czottmann/linearis/compare/2025.11.1...2025.11.2
+[2025.11.2]: https://github.com/czottmann/clinear/compare/2025.11.1...2025.11.2
 
 ### Added
 
-- New `cycles` and `project-milestones` commands 🎉 – thanks, [Ryan](https://github.com/ryanrozich)! [PR#7](https://github.com/czottmann/linearis/pull/7)
+- New `cycles` and `project-milestones` commands 🎉 – thanks, [Ryan](https://github.com/ryanrozich)! [PR#7](https://github.com/czottmann/clinear/pull/7)
 - The `issues` commands now include parent and child issue relationships <!-- ZCO-1574, ZCO-1586 -->
   - `parentIssue` field with `{ id, identifier, title }` for parent issue (if exists)
   - `subIssues` array with `{ id, identifier, title }` for immediate child issues
@@ -129,7 +129,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [2025.11.1] - 2025-11-06
 
-[2025.11.1]: https://github.com/czottmann/linearis/compare/1.1.0...2025.11.1
+[2025.11.1]: https://github.com/czottmann/clinear/compare/1.1.0...2025.11.1
 
 ### Added
 
@@ -156,11 +156,11 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [1.1.0] - 2025-10-21
 
-[1.1.0]: https://github.com/czottmann/linearis/compare/1.0.0...1.1.0
+[1.1.0]: https://github.com/czottmann/clinear/compare/1.0.0...1.1.0
 
 ### Fixes
 
-- Updated CLI program name from "linear" to "linearis" for consistency with project name
+- Updated CLI program name from "linear" to "clinear" for consistency with project name
 
 ### Documentation
 
@@ -170,8 +170,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [1.0.0] - 2025-10-21
 
-[1.0.0]: https://github.com/czottmann/linearis/releases/tag/1.0.0
+[1.0.0]: https://github.com/czottmann/clinear/releases/tag/1.0.0
 
 ### Added
 
-- Initial release of Linearis CLI tool
+- Initial release of Clinear CLI tool

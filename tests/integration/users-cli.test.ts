@@ -30,7 +30,7 @@ describe("Users CLI Commands", () => {
     it("should display help text", async () => {
       const { stdout } = await execAsync(`node ${CLI_PATH} users --help`);
 
-      expect(stdout).toContain("Usage: linearis users");
+      expect(stdout).toContain("Usage: clinear users");
       expect(stdout).toContain("User operations");
       expect(stdout).toContain("list");
     });

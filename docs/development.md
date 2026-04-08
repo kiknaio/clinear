@@ -1,6 +1,6 @@
 # Development
 
-Linearis is a CLI tool for [Linear.app](https://linear.app) that outputs structured JSON. It uses a layered architecture with strict TypeScript, GraphQL code generation, and ES modules.
+Clinear is a CLI tool for [Linear.app](https://linear.app) that outputs structured JSON. It uses a layered architecture with strict TypeScript, GraphQL code generation, and ES modules.
 
 ## Prerequisites
 
@@ -187,7 +187,7 @@ Rules for services:
 
 ## GraphQL Workflow
 
-Linearis uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen) to produce typed query documents and result types. Never write raw GraphQL strings in TypeScript.
+Clinear uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen) to produce typed query documents and result types. Never write raw GraphQL strings in TypeScript.
 
 ### Adding or Changing a Query
 
@@ -278,19 +278,19 @@ outputError(error);    // { "error": "message" }
 
 ## Authentication
 
-For interactive setup, run `linearis auth login` — it opens Linear in the browser and stores the token encrypted in `~/.linearis/token`.
+For interactive setup, run `clinear auth login` — it opens Linear in the browser and stores the token encrypted in `~/.clinear/token`.
 
 The API token is resolved in this order:
 
 1. `--api-token <token>` command-line flag
 2. `LINEAR_API_TOKEN` environment variable
-3. `~/.linearis/token` (encrypted, set up via `linearis auth login`)
+3. `~/.clinear/token` (encrypted, set up via `clinear auth login`)
 4. `~/.linear_api_token` (deprecated)
 
 For local development, the interactive login is the most convenient:
 
 ```bash
-linearis auth login
+clinear auth login
 ```
 
 ## Adding New Functionality

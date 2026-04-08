@@ -33,12 +33,13 @@ export class GraphQLClient {
     try {
       const response = await Promise.race([
         this.rawClient.rawRequest(print(document), variables),
-        new Promise<never>((_, reject) =>
-          setTimeout(
+        new Promise<never>((_, reject) => {
+          const t = setTimeout(
             () => reject(new Error("Request timed out")),
             REQUEST_TIMEOUT_MS,
-          ),
-        ),
+          );
+          t.unref();
+        }),
       ]);
       return response.data as TResult;
     } catch (error: unknown) {

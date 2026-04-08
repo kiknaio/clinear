@@ -11,7 +11,7 @@ const ALGORITHM = "aes-256-cbc";
 // Hardcoded key material — provides obfuscation-level protection against
 // accidental token exposure (browsing files, git commits).
 // Does NOT protect against determined attackers with access to the binary.
-const KEY_MATERIAL = "linearis-v1-token-encryption-key";
+const KEY_MATERIAL = "clinear-v1-token-encryption-key";
 
 function deriveKey(): Buffer {
   return createHash("sha256").update(KEY_MATERIAL).digest();

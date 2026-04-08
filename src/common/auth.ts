@@ -26,7 +26,7 @@ export function resolveApiToken(options: CommandOptions): ResolvedToken {
     return { token: process.env.LINEAR_API_TOKEN, source: "env" };
   }
 
-  // 3. Encrypted stored token (~/.linearis/token)
+  // 3. Encrypted stored token (~/.clinear/token)
   const storedToken = getStoredToken();
   if (storedToken) {
     return { token: storedToken, source: "stored" };
@@ -36,7 +36,7 @@ export function resolveApiToken(options: CommandOptions): ResolvedToken {
   const legacyFile = path.join(os.homedir(), ".linear_api_token");
   if (fs.existsSync(legacyFile)) {
     console.error(
-      "Warning: ~/.linear_api_token is deprecated. Run 'linearis auth' to migrate.",
+      "Warning: ~/.linear_api_token is deprecated. Run 'clinear auth' to migrate.",
     );
     return {
       token: fs.readFileSync(legacyFile, "utf8").trim(),
@@ -45,7 +45,7 @@ export function resolveApiToken(options: CommandOptions): ResolvedToken {
   }
 
   throw new Error(
-    "No API token found. Run 'linearis auth' to set up authentication.",
+    "No API token found. Run 'clinear auth' to set up authentication.",
   );
 }
 

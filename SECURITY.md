@@ -13,7 +13,7 @@ Only the latest published version receives security fixes. We recommend always r
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-If you discover a security vulnerability in Linearis, please report it responsibly by emailing **both**:
+If you discover a security vulnerability in Clinear, please report it responsibly by emailing **both**:
 
 - **Fabian Jocks** — [dev@iamfj.xyz](mailto:dev@iamfj.xyz)
 - **Carlo Zottmann** — [carlo@zottmann.dev](mailto:carlo@zottmann.dev)
@@ -38,7 +38,7 @@ The following are in scope for security reports:
 - Authentication token handling (storage, transmission, leakage)
 - Arbitrary file read/write via CLI input
 - Command injection or path traversal
-- Dependency vulnerabilities that are exploitable in Linearis
+- Dependency vulnerabilities that are exploitable in Clinear
 
 The following are **out of scope**:
 
@@ -47,8 +47,8 @@ The following are **out of scope**:
 
 ## Encryption Disclaimer
 
-Linearis stores API tokens with obfuscation-level encryption using a key embedded in the source code. This protects against casual exposure (e.g., accidental file sharing, git commits) but **does not protect** against a determined attacker with access to the binary or source. This is a known design trade-off, not a vulnerability.
+Clinear stores API tokens with obfuscation-level encryption using a key embedded in the source code. This protects against casual exposure (e.g., accidental file sharing, git commits) but **does not protect** against a determined attacker with access to the binary or source. This is a known design trade-off, not a vulnerability.
 
 ## Thank You
 
-We appreciate the security research community and anyone who takes the time to report issues responsibly. Thank you for helping keep Linearis and its users safe.
+We appreciate the security research community and anyone who takes the time to report issues responsibly. Thank you for helping keep Clinear and its users safe.

@@ -35,7 +35,7 @@ describe("Milestones CLI Commands", () => {
     it("should display help with kebab-case naming", async () => {
       const { stdout } = await execAsync(`node ${CLI_PATH} milestones --help`);
 
-      expect(stdout).toContain("Usage: linearis milestones");
+      expect(stdout).toContain("Usage: clinear milestones");
       expect(stdout).toContain("Project milestone operations");
       expect(stdout).toContain("list");
       expect(stdout).toContain("read");
@@ -57,7 +57,7 @@ describe("Milestones CLI Commands", () => {
         const { stdout } = await execAsync(
           `node ${CLI_PATH} projectMilestones --help`,
         ).catch((e) => e);
-        expect(stdout).toContain("Usage: linearis");
+        expect(stdout).toContain("Usage: clinear");
       } catch (error: unknown) {
         // Expected to fail - old command name not recognized
         const execError = error as { stderr?: string; message?: string };

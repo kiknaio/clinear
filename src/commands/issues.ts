@@ -31,10 +31,103 @@ import {
   updateIssue,
 } from "../services/issue-service.js";
 
+type Nodes<T> = { nodes: T[] } | null | undefined;
+
+function unwrap<T>(field: Nodes<T>): T[] | undefined {
+  const arr = field?.nodes;
+  return arr && arr.length > 0 ? arr : undefined;
+}
+
+// Flatten nested objects to their meaningful scalar rather than exposing internal UUIDs.
+// Relations are collapsed to { type, identifier } — the UUID is never useful to an agent.
+function flattenValue(key: string, val: unknown): unknown {
+  if (val === null || val === undefined) return undefined;
+
+  if (key === "state" || key === "project" || key === "projectMilestone") {
+    return (val as Record<string, unknown>).name;
+  }
+  if (key === "team") {
+    return (val as Record<string, unknown>).key;
+  }
+  if (key === "assignee") {
+    return (val as Record<string, unknown>).name;
+  }
+  if (key === "parent") {
+    return (val as Record<string, unknown>).identifier;
+  }
+  if (key === "cycle") {
+    const c = val as Record<string, unknown>;
+    return c.name ?? c.number;
+  }
+  if (key === "labels") {
+    const arr = unwrap(val as Nodes<Record<string, unknown>>);
+    return arr && arr.length > 0 ? arr.map((l) => l.name) : undefined;
+  }
+  if (key === "children") {
+    const arr = unwrap(val as Nodes<Record<string, unknown>>);
+    return arr && arr.length > 0 ? arr.map((c) => c.identifier) : undefined;
+  }
+  if (key === "relations") {
+    const arr = unwrap(val as Nodes<Record<string, unknown>>);
+    return arr && arr.length > 0
+      ? arr.map((r) => ({
+          type: r.type,
+          identifier: (r.relatedIssue as Record<string, unknown>).identifier,
+        }))
+      : undefined;
+  }
+  if (key === "inverseRelations") {
+    const arr = unwrap(val as Nodes<Record<string, unknown>>);
+    return arr && arr.length > 0
+      ? arr.map((r) => ({
+          type: r.type,
+          identifier: (r.issue as Record<string, unknown>).identifier,
+        }))
+      : undefined;
+  }
+  if (key === "comments") {
+    const arr = unwrap(val as Nodes<unknown>);
+    return arr && arr.length > 0 ? arr : undefined;
+  }
+  if (key === "priority" && val === 0) return undefined;
+
+  return val;
+}
+
+const ALWAYS_INCLUDED = new Set(["id", "identifier"]);
+// Excluded from list output — too verbose; available via `read`
+const LIST_EXCLUDED = new Set(["description", "branchName"]);
+
+function normalizeIssue(
+  issue: Record<string, unknown>,
+  fields?: Set<string>,
+  forList = false,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [key, val] of Object.entries(issue)) {
+    if (fields && !ALWAYS_INCLUDED.has(key) && !fields.has(key)) continue;
+    if (forList && !fields && LIST_EXCLUDED.has(key)) continue;
+    const flattened = flattenValue(key, val);
+    if (flattened !== undefined) result[key] = flattened;
+  }
+  return result;
+}
+
+function parseFields(raw: string | undefined): Set<string> | undefined {
+  if (!raw) return undefined;
+  return new Set(
+    raw
+      .split(",")
+      .map((f) => f.trim())
+      .filter(Boolean),
+  );
+}
+
 interface ListOptions {
   query?: string;
   limit: string;
   after?: string;
+  fields?: string;
 }
 
 interface CreateOptions {
@@ -176,6 +269,10 @@ export function setupIssuesCommands(program: Command): void {
     .option("--query <text>", "filter by text search")
     .option("-l, --limit <n>", "max results", "50")
     .option("--after <cursor>", "cursor for next page")
+    .option(
+      "--fields <fields>",
+      "comma-separated fields to include (e.g. title,state,assignee)",
+    )
     .action(
       handleCommand(async (...args: unknown[]) => {
         const [options, command] = args as [ListOptions, Command];
@@ -185,6 +282,7 @@ export function setupIssuesCommands(program: Command): void {
           limit: parseLimit(options.limit),
           after: options.after,
         };
+        const fields = parseFields(options.fields);
 
         if (options.query) {
           const result = await searchIssues(
@@ -192,10 +290,18 @@ export function setupIssuesCommands(program: Command): void {
             options.query,
             paginationOptions,
           );
-          outputSuccess(result);
+          outputSuccess(
+            result.nodes.map((i) =>
+              normalizeIssue(i as Record<string, unknown>, fields, true),
+            ),
+          );
         } else {
           const result = await listIssues(ctx.gql, paginationOptions);
-          outputSuccess(result);
+          outputSuccess(
+            result.nodes.map((i) =>
+              normalizeIssue(i as Record<string, unknown>, fields, true),
+            ),
+          );
         }
       }),
     );
@@ -207,14 +313,25 @@ export function setupIssuesCommands(program: Command): void {
       "after",
       `\nWhen passing issue IDs, both UUID and identifiers like ABC-123 are supported.`,
     )
+    .option(
+      "--fields <fields>",
+      "comma-separated fields to include (e.g. title,state,description)",
+    )
     .action(
       handleCommand(async (...args: unknown[]) => {
-        const [issue, , command] = args as [string, unknown, Command];
+        const [issue, options, command] = args as [
+          string,
+          { fields?: string },
+          Command,
+        ];
         const ctx = createContext(command.parent!.parent!.opts());
+        const fields = parseFields(options.fields);
 
         if (isUuid(issue)) {
           const result = await getIssue(ctx.gql, issue);
-          outputSuccess(result);
+          outputSuccess(
+            normalizeIssue(result as Record<string, unknown>, fields),
+          );
         } else {
           const { teamKey, issueNumber } = parseIssueIdentifier(issue);
           const result = await getIssueByIdentifier(
@@ -222,7 +339,9 @@ export function setupIssuesCommands(program: Command): void {
             teamKey,
             issueNumber,
           );
-          outputSuccess(result);
+          outputSuccess(
+            normalizeIssue(result as Record<string, unknown>, fields),
+          );
         }
       }),
     );

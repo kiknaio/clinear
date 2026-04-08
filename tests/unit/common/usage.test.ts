@@ -27,10 +27,10 @@ describe("formatOverview", () => {
 
     const result = formatOverview("2025.12.3", metas);
 
-    expect(result).toContain("linearis v2025.12.3");
+    expect(result).toContain("clinear v2025.12.3");
     expect(result).toContain("CLI for Linear.app");
     expect(result).toContain(
-      "auth: linearis auth login | --api-token <token> | LINEAR_API_TOKEN | ~/.linearis/token",
+      "auth: clinear auth login | --api-token <token> | LINEAR_API_TOKEN | ~/.clinear/token",
     );
     expect(result).toContain("output: JSON");
     expect(result).toContain("ids: UUID or human-readable");
@@ -41,7 +41,7 @@ describe("formatOverview", () => {
     );
     expect(result).toContain("teams");
     expect(result).toContain("organizational units owning issues and cycles");
-    expect(result).toContain("detail: linearis <domain> usage");
+    expect(result).toContain("detail: clinear <domain> usage");
   });
 
   it("pads domain names for alignment", () => {
@@ -106,7 +106,7 @@ describe("formatDomainUsage", () => {
 
     // Header
     expect(result).toContain(
-      "linearis issues — work items with status, priority, assignee, labels",
+      "clinear issues — work items with status, priority, assignee, labels",
     );
     // Context
     expect(result).toContain("an issue belongs to exactly one team.");
@@ -151,7 +151,7 @@ describe("formatDomainUsage", () => {
 
     const result = formatDomainUsage(domain, meta);
 
-    expect(result).toContain("linearis teams — organizational units");
+    expect(result).toContain("clinear teams — organizational units");
     expect(result).toContain("a team owns issues and cycles.");
     expect(result).toContain("list");
     expect(result).not.toContain("arguments:");

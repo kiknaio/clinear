@@ -73,9 +73,9 @@ function extractTestedCommands(testsDir: string): Set<string> {
     //   node ./dist/main.js cycles list
     //   node ${CLI_PATH} cycles list
     //   node ${CLI_PATH} cycles read ${cycleId}
-    //   linearis cycles list
+    //   clinear cycles list
     const patterns = [
-      /(?:node\s+(?:\$\{CLI_PATH\}|\.\/dist\/main\.js)|linearis)\s+([a-z-]+)\s+([a-z-]+)/g,
+      /(?:node\s+(?:\$\{CLI_PATH\}|\.\/dist\/main\.js)|clinear)\s+([a-z-]+)\s+([a-z-]+)/g,
     ];
 
     for (const pattern of patterns) {

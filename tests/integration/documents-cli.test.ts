@@ -30,7 +30,7 @@ describe("Documents CLI Commands", () => {
     it("should display help text", async () => {
       const { stdout } = await execAsync(`node ${CLI_PATH} documents --help`);
 
-      expect(stdout).toContain("Usage: linearis documents");
+      expect(stdout).toContain("Usage: clinear documents");
       expect(stdout).toContain("Document operations");
       expect(stdout).toContain("create");
       expect(stdout).toContain("update");
